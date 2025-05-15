@@ -1,3 +1,4 @@
+-- Active: 1745487748000@@localhost@3306@mydb
 
 -- POPULATE USER ROLES
 INSERT INTO `mydb`.user_role (role_id, role_description) VALUES 
@@ -175,54 +176,57 @@ INSERT INTO `mydb`.product_attrvalues (PRODUCT_ID, CATEGORY_ID, ATTRIBUTE_ID, AT
 (1, 1, 0, 0),  -- Chocolate Coated Candies, Color=Red
 (2, 2, 0, 0);  -- Tomato Ketchup, Spiciness=Mild
 
--- POPULATE SHOPPING CART
-INSERT INTO `mydb`.shopping_cart (cart_id, user_id, shopping_date, is_paid, is_cancelled) VALUES
-(100, 1, CURDATE(), 1, 0),
-(101, 2, CURDATE(), 0, 0);
 
--- POPULATE SHOPPING CART ITEMS
-INSERT INTO `mydb`.shopping_cart_items (cart_id, num_seq, product_id, quantity) VALUES
-(100, 1, 0, 2),  -- 2× Milk Chocolate Bars
-(100, 2, 3, 1),  -- 1× Hersheys Kisses
-(101, 1, 2, 1);  -- 1× Tomato Ketchup
+-- DO NOT RUN THIS, THE PYTHON SCRIPT WILL DO IT
 
--- POPULATE CCPAYMENT (links to ccpayment_card)
-INSERT INTO `mydb`.ccpayment (
-  CCPAYTRAN_ID, CURRENCY_ID, EXPECTED_AMOUNT, APPROVING_AMOUNT, APPROVED_AMOUNT,
-  CCPAYMENT_STATE, TIMECREATED, user_id, cc_num_seq
-) VALUES
-(
-  NULL, 'USD', 9.97, 9.97, 9.97,
-  '2', NOW(), 1, 238
-);
+-- -- POPULATE SHOPPING CART
+-- INSERT INTO `mydb`.shopping_cart (cart_id, user_id, shopping_date, is_paid, is_cancelled) VALUES
+-- (100, 1, CURDATE(), 1, 0),
+-- (101, 2, CURDATE(), 0, 0);
 
--- POPULATE TICKET (links to ccpayment, cart)
-INSERT INTO `mydb`.ticket (
-  TIMEPLACED, TOTAL_PRODUCT, TOTAL_TAX, TOTAL_ORDER, CURRENCY_ID,
-  PAYMENT_ID, user_id, cart_id
-) VALUES
-(
-  NOW(), 9.97, 0.00, 9.97, 'USD',
-  1, 1, 100
-);
+-- -- POPULATE SHOPPING CART ITEMS
+-- INSERT INTO `mydb`.shopping_cart_items (cart_id, num_seq, product_id, quantity) VALUES
+-- (100, 1, 0, 2),  -- 2× Milk Chocolate Bars
+-- (100, 2, 3, 1),  -- 1× Hersheys Kisses
+-- (101, 1, 2, 1);  -- 1× Tomato Ketchup
 
--- POPULATE TICKET ITEM
-INSERT INTO `mydb`.ticket_item (
-  TICKET_ID, NUMSEQ, PRODUCT_ID, DESCRIPTION,
-  QUANTITY, CURRENCY, PRICE, TAX_AMOUNT, PRODUCT_AMOUNT
-) VALUES
-(
-  1, 1, 0, 'Milk Chocolate Bars',
-  2, 'USD', 2.99, 0.00, 5.98
-),
-(
-  1, 2, 3, 'Hersheys Kisses',
-  1, 'USD', 4.99, 0.00, 4.99
-);
+-- -- POPULATE CCPAYMENT (links to ccpayment_card)
+-- INSERT INTO `mydb`.ccpayment (
+--   CCPAYTRAN_ID, CURRENCY_ID, EXPECTED_AMOUNT, APPROVING_AMOUNT, APPROVED_AMOUNT,
+--   CCPAYMENT_STATE, TIMECREATED, user_id, cc_num_seq
+-- ) VALUES
+-- (
+--   NULL, 'USD', 9.97, 9.97, 9.97,
+--   '2', NOW(), 1, 238
+-- );
 
--- POPULATE ITEMS DELIVERY
-INSERT INTO `mydb`.items_delivery (ticket_id, delivery_date, address_id, is_delivered) VALUES
-(1, DATE_ADD(CURDATE(), INTERVAL 2 DAY), 0, 0);
+-- -- POPULATE TICKET (links to ccpayment, cart)
+-- INSERT INTO `mydb`.ticket (
+--   TIMEPLACED, TOTAL_PRODUCT, TOTAL_TAX, TOTAL_ORDER, CURRENCY_ID,
+--   PAYMENT_ID, user_id, cart_id
+-- ) VALUES
+-- (
+--   NOW(), 9.97, 0.00, 9.97, 'USD',
+--   1, 1, 100
+-- );
+
+-- -- POPULATE TICKET ITEM
+-- INSERT INTO `mydb`.ticket_item (
+--   TICKET_ID, NUMSEQ, PRODUCT_ID, DESCRIPTION,
+--   QUANTITY, CURRENCY, PRICE, TAX_AMOUNT, PRODUCT_AMOUNT
+-- ) VALUES
+-- (
+--   1, 1, 0, 'Milk Chocolate Bars',
+--   2, 'USD', 2.99, 0.00, 5.98
+-- ),
+-- (
+--   1, 2, 3, 'Hersheys Kisses',
+--   1, 'USD', 4.99, 0.00, 4.99
+-- );
+
+-- -- POPULATE ITEMS DELIVERY
+-- INSERT INTO `mydb`.items_delivery (ticket_id, delivery_date, address_id, is_delivered) VALUES
+-- (1, DATE_ADD(CURDATE(), INTERVAL 2 DAY), 0, 0);
 
 
 
