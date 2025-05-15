@@ -84,7 +84,7 @@ def mock_product_sale(
         ) VALUES
         (
             {ticket_id}, {ticket_id}, {product_id}, 'Auto-generated',
-            {quantity}, 'USD', {total_price}, 0.00, {total_price}
+            {quantity}, 'USD', {price}, 0.00, {total_price}
         );
     """
     
