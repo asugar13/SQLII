@@ -15,21 +15,37 @@ PRODUCTS = [
 ]
 
 USERS = [
-    {"id": 1, "address_id": 0, "cc_num_seq": 238},
-    {"id": 2, "address_id": 1, "cc_num_seq": 943},
-    {"id": 3, "address_id": 2, "cc_num_seq": 314},
-    {"id": 4, "address_id": 3, "cc_num_seq": 434}
+    {"id": 1,  "address_id": 0,  "cc_num_seq": 238},
+    {"id": 2,  "address_id": 1,  "cc_num_seq": 943},
+    {"id": 3,  "address_id": 2,  "cc_num_seq": 314},
+    {"id": 4,  "address_id": 3,  "cc_num_seq": 434},
+    {"id": 5,  "address_id": 4,  "cc_num_seq": 321},
+    {"id": 6,  "address_id": 5,  "cc_num_seq": 654},
+    {"id": 7,  "address_id": 6,  "cc_num_seq": 987},
+    {"id": 8,  "address_id": 7,  "cc_num_seq": 123},
+    {"id": 9,  "address_id": 8,  "cc_num_seq": 456},
+    {"id": 10, "address_id": 9,  "cc_num_seq": 246},
+    {"id": 11, "address_id": 10, "cc_num_seq": 579},
+    {"id": 12, "address_id": 11, "cc_num_seq": 864},
+    {"id": 13, "address_id": 12, "cc_num_seq": 753},
+    {"id": 14, "address_id": 13, "cc_num_seq": 159},
+    {"id": 15, "address_id": 14, "cc_num_seq": 852},
+    {"id": 16, "address_id": 15, "cc_num_seq": 357},
+    {"id": 17, "address_id": 16, "cc_num_seq": 951},
+    {"id": 18, "address_id": 17, "cc_num_seq": 258},
+    {"id": 19, "address_id": 18, "cc_num_seq": 654},
 ]
 
+
 def mock_product_sale(
-        product: dict[int, float], 
-        quantity: int, 
-        date: datetime, 
-        user: dict[int, int],
-        cart_id: int,
-        cc_payment_id: int,
-        ticket_id: int
-    ):
+    product: dict[int, float],
+    quantity: int,
+    date: datetime,
+    user: dict[int, int],
+    cart_id: int,
+    cc_payment_id: int,
+    ticket_id: int
+):
     product_id = product["id"]
     price = product["price"]
     user_id = user["id"]
@@ -59,7 +75,8 @@ def mock_product_sale(
             CCPAYMENT_STATE, TIMECREATED, user_id, cc_num_seq
         ) VALUES
         (
-            {cc_payment_id}, NULL, 'USD', {total_price}, {total_price}, {total_price},
+            {cc_payment_id}, NULL, 'USD', {total_price}, {
+        total_price}, {total_price},
             '2', '{date}', {user_id}, {cc_num_seq}
         );
     """
@@ -75,7 +92,7 @@ def mock_product_sale(
             {cc_payment_id}, {user_id}, {cart_id}
         );
     """
-    
+
     # Create a ticket item
     ticket_item_sql = f"""
         INSERT INTO `mydb`.ticket_item (
@@ -87,12 +104,14 @@ def mock_product_sale(
             {quantity}, 'USD', {price}, 0.00, {total_price}
         );
     """
-    
+
+    # 99% chance of delivery
+    is_delivered = 1 if random.random() < 0.99 else 0
     # Create a item delivery
     item_delivery_sql = f"""
         INSERT INTO `mydb`.items_delivery (ticket_id, delivery_date, address_id, is_delivered) VALUES
         (
-            {ticket_id}, '{date}', {address_id}, 0
+            {ticket_id}, '{date}', {address_id}, {is_delivered}
         );
     """
 
@@ -112,6 +131,7 @@ def mock_product_sale(
     """
 
     return result
+
 
 def main():
     today = datetime.now()
@@ -146,6 +166,7 @@ def main():
     with open(file_name, "w") as f:
         f.write(result)
         f.close()
+
 
 if __name__ == "__main__":
     main()
