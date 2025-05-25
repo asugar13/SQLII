@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import os
 import random
+import math
 
 PRODUCTS = [
     {"id": 0, "price": 2.99},
@@ -37,6 +38,13 @@ USERS = [
 ]
 
 
+def truncate5(x: float) -> float:
+    """
+    Truncate a float to 5 decimal places without rounding.
+    """
+    return math.floor(x * 1e5) / 1e5
+
+
 def mock_product_sale(
     product: dict[int, float],
     quantity: int,
@@ -54,7 +62,9 @@ def mock_product_sale(
 
     date = date.strftime('%Y-%m-%d')
 
-    total_price = price * quantity
+    # Compute total and truncate
+    raw_total = price * quantity
+    total_price = truncate5(raw_total)
 
     # Create a shopping cart
     cart_sql = f"""
@@ -75,8 +85,7 @@ def mock_product_sale(
             CCPAYMENT_STATE, TIMECREATED, user_id, cc_num_seq
         ) VALUES
         (
-            {cc_payment_id}, NULL, 'USD', {total_price}, {
-        total_price}, {total_price},
+            {cc_payment_id}, NULL, 'USD', {total_price:.5f}, {total_price:.5f}, {total_price:.5f},
             '2', '{date}', {user_id}, {cc_num_seq}
         );
     """
@@ -88,7 +97,7 @@ def mock_product_sale(
             PAYMENT_ID, user_id, cart_id
         ) VALUES
         (
-            {ticket_id}, '{date}', {total_price}, 0.00, {total_price}, 'USD',
+            {ticket_id}, '{date}', {total_price:.5f}, 0.00000, {total_price:.5f}, 'USD',
             {cc_payment_id}, {user_id}, {cart_id}
         );
     """
@@ -101,13 +110,14 @@ def mock_product_sale(
         ) VALUES
         (
             {ticket_id}, {ticket_id}, {product_id}, 'Auto-generated',
-            {quantity}, 'USD', {price}, 0.00, {total_price}
+            {quantity}, 'USD', {truncate5(price):.5f}, 0.00000, {total_price:.5f}
         );
     """
 
     # 99% chance of delivery
     is_delivered = 1 if random.random() < 0.99 else 0
-    # Create a item delivery
+
+    # Create an item delivery
     item_delivery_sql = f"""
         INSERT INTO `mydb`.items_delivery (ticket_id, delivery_date, address_id, is_delivered) VALUES
         (
@@ -162,7 +172,7 @@ def main():
     if os.path.exists(file_name):
         os.remove(file_name)
 
-    # create a file with the result
+    # write the result
     with open(file_name, "w") as f:
         f.write(result)
         f.close()
